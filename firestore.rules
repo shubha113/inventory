@@ -1,0 +1,107 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isMember(companyId) {
+      return isSignedIn() &&
+        exists(/databases/$(database)/documents/companyMembers/$(companyId + '_' + request.auth.uid));
+    }
+
+    function memberRole(companyId) {
+      return get(/databases/$(database)/documents/companyMembers/$(companyId + '_' + request.auth.uid)).data.role;
+    }
+
+    function isCompanyAdmin(companyId) {
+      return isMember(companyId) && memberRole(companyId) == "admin";
+    }
+
+    match /users/{userId} {
+      allow read, write: if false;
+    }
+
+    // ---- Companies & membership -------------------------------------
+
+    match /companies/{companyId} {
+      allow read: if isMember(companyId);
+      allow create: if isSignedIn() && request.resource.data.createdBy == request.auth.uid;
+      allow update, delete: if isCompanyAdmin(companyId);
+    }
+
+    match /companyMembers/{memberId} {
+      // FIX: Allow reading if the user is querying/reading their own membership record OR if they are a teammate in the same company
+      allow read: if isSignedIn() && (resource.data.uid == request.auth.uid || isMember(resource.data.companyId));
+
+      allow create: if isSignedIn()
+        && request.resource.data.uid == request.auth.uid
+        && request.resource.data.role == "admin"
+        && memberId == request.resource.data.companyId + '_' + request.auth.uid;
+
+      allow update: if isCompanyAdmin(resource.data.companyId)
+        && request.resource.data.companyId == resource.data.companyId
+        && request.resource.data.uid == resource.data.uid;
+
+      allow delete: if isCompanyAdmin(resource.data.companyId);
+    }
+
+    // ---- Business data ----------------------------------------------
+
+    match /categories/{id} {
+      allow read: if isMember(resource.data.companyId);
+      allow create: if isMember(request.resource.data.companyId);
+      allow update, delete: if isMember(resource.data.companyId);
+    }
+
+    match /suppliers/{id} {
+      allow read: if isMember(resource.data.companyId);
+      allow create: if isMember(request.resource.data.companyId);
+      allow update, delete: if isMember(resource.data.companyId);
+    }
+
+    match /products/{id} {
+      allow read: if isMember(resource.data.companyId);
+      allow create: if isMember(request.resource.data.companyId);
+      allow update, delete: if isMember(resource.data.companyId);
+    }
+
+    match /rawMaterials/{id} {
+      allow read: if isMember(resource.data.companyId);
+      allow create: if isMember(request.resource.data.companyId);
+      allow update, delete: if isMember(resource.data.companyId);
+    }
+
+    match /productionRuns/{id} {
+      allow read: if isMember(resource.data.companyId);
+      allow create: if isMember(request.resource.data.companyId);
+      allow update, delete: if isMember(resource.data.companyId);
+    }
+
+    match /stockMovements/{id} {
+      allow read: if isMember(resource.data.companyId);
+      allow create: if isMember(request.resource.data.companyId);
+      allow update, delete: if isMember(resource.data.companyId);
+    }
+
+    match /purchaseOrders/{id} {
+      allow read: if isMember(resource.data.companyId);
+      allow create: if isMember(request.resource.data.companyId);
+      allow update, delete: if isMember(resource.data.companyId);
+    }
+
+    match /salesOrders/{id} {
+      allow read: if isMember(resource.data.companyId);
+      allow create: if isMember(request.resource.data.companyId);
+      allow update, delete: if isMember(resource.data.companyId);
+    }
+
+    match /materialRequests/{id} {
+      allow read: if isMember(resource.data.companyId);
+      allow create: if isMember(request.resource.data.companyId);
+      allow update, delete: if isMember(resource.data.companyId);
+    }
+  }
+}

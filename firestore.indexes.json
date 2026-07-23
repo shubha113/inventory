@@ -1,0 +1,91 @@
+{
+  "indexes": [
+    {
+      "collectionGroup": "categories",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companyId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "suppliers",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companyId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "products",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companyId", "order": "ASCENDING" },
+        { "fieldPath": "updatedAt", "order": "DESCENDING" }
+      ]
+    },
+    {
+      "collectionGroup": "rawMaterials",
+      "queryScope": "COLLECTION",
+      "fields": [
+        { "fieldPath": "companyId", "order": "ASCENDING" },
+        { "fieldPath": "createdAt", "order": "DESCENDING" }
+      ]
+    },
+{
+  "collectionGroup": "rawMaterials",
+  "queryScope": "COLLECTION",
+  "fields": [
+    { "fieldPath": "companyId", "order": "ASCENDING" },
+    { "fieldPath": "updatedAt", "order": "DESCENDING" }
+  ]
+},
+    {
+  "collectionGroup": "productionRuns",
+  "queryScope": "COLLECTION",
+  "fields": [
+    { "fieldPath": "companyId", "order": "ASCENDING" },
+    { "fieldPath": "createdAt", "order": "DESCENDING" }
+  ]
+},
+{
+  "collectionGroup": "stockMovements",
+  "queryScope": "COLLECTION",
+  "fields": [
+    { "fieldPath": "companyId", "order": "ASCENDING" },
+    { "fieldPath": "createdAt", "order": "DESCENDING" }
+  ]
+},
+{
+  "collectionGroup": "purchaseOrders",
+  "queryScope": "COLLECTION",
+  "fields": [
+    { "fieldPath": "companyId", "order": "ASCENDING" },
+    { "fieldPath": "updatedAt", "order": "DESCENDING" }
+  ]
+},
+{
+  "collectionGroup": "salesOrders",
+  "queryScope": "COLLECTION",
+  "fields": [
+    { "fieldPath": "companyId", "order": "ASCENDING" },
+    { "fieldPath": "updatedAt", "order": "DESCENDING" }
+  ]
+},
+{
+      "collectionGroup": "materialRequests",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "companyId",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "updatedAt",
+          "order": "DESCENDING"
+        }
+      ]
+    }
+  ],
+  "fieldOverrides": []
+}
