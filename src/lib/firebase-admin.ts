@@ -1,31 +1,29 @@
+
 import "server-only";
+import { getApps, initializeApp, cert, App } from "firebase-admin/app";
+import { getFirestore } from "firebase-admin/firestore";
+import { getAuth } from "firebase-admin/auth";
 
-let firebaseAdminInstance: any = null;
+function getAdminApp(): App {
+  if (getApps().length) return getApps()[0];
 
-function getFirebaseAdmin() {
-  if (firebaseAdminInstance) return firebaseAdminInstance;
+  const projectId = process.env.FIREBASE_PROJECT_ID;
+  const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
+  const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n");
 
-  // Dynamically load the root module at runtime
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const admin = require("firebase-admin");
-
-  if (!admin.apps.length) {
-    const projectId = process.env.FIREBASE_PROJECT_ID;
-    const clientEmail = process.env.FIREBASE_CLIENT_EMAIL;
-    const privateKey = process.env.FIREBASE_PRIVATE_KEY?.replace(/\\n/g, "\n");
-
-    if (!projectId || !clientEmail || !privateKey) {
-      throw new Error("Missing Firebase Admin environment variables.");
-    }
-
-    admin.initializeApp({
-      credential: admin.credential.cert({ projectId, clientEmail, privateKey }),
-    });
+  if (!projectId || !clientEmail || !privateKey) {
+    throw new Error(
+      "Missing Firebase Admin credentials. Set FIREBASE_PROJECT_ID, " +
+        "FIREBASE_CLIENT_EMAIL and FIREBASE_PRIVATE_KEY in .env.local " +
+        "(see .env.local.example)."
+    );
   }
 
-  firebaseAdminInstance = admin;
-  return admin;
+  return initializeApp({
+    credential: cert({ projectId, clientEmail, privateKey }),
+  });
 }
 
-export const getAdminDb = () => getFirebaseAdmin().firestore();
-export const getAdminAuth = () => getFirebaseAdmin().auth();
+export const adminDb = getFirestore(getAdminApp());
+
+export const adminAuth = getAuth(getAdminApp());
