@@ -4,12 +4,12 @@ import { adminDb } from "@/lib/firebase-admin";
 import { setSessionCookie } from "@/lib/session";
 import type { UserProfile } from "@/types";
 
+export const runtime = "nodejs";
+
 interface UserDoc extends UserProfile {
   passwordHash: string;
 }
 
-// Generic on purpose: we don't want to tell an attacker whether the email
-// exists or the password was wrong — "invalid credentials" either way.
 const INVALID_CREDENTIALS = {
   error: "invalid-credentials",
   message: "That email and password don't match our records.",
@@ -17,13 +17,21 @@ const INVALID_CREDENTIALS = {
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, password } = await req.json();
+    const body = await req.json().catch(() => null);
+    
+    if (!body || typeof body.email !== "string" || typeof body.password !== "string") {
+      return NextResponse.json(INVALID_CREDENTIALS, { status: 400 });
+    }
 
-    if (typeof email !== "string" || typeof password !== "string" || !email.trim() || !password) {
+    const { email, password } = body;
+
+    if (!email.trim() || !password) {
       return NextResponse.json(INVALID_CREDENTIALS, { status: 400 });
     }
 
     const normalizedEmail = email.trim().toLowerCase();
+    
+    // Query Firestore
     const snap = await adminDb
       .collection("users")
       .where("email", "==", normalizedEmail)
@@ -35,6 +43,11 @@ export async function POST(req: NextRequest) {
     }
 
     const userDoc = snap.docs[0].data() as UserDoc;
+    
+    if (!userDoc.passwordHash) {
+      return NextResponse.json(INVALID_CREDENTIALS, { status: 401 });
+    }
+
     const passwordMatches = await bcrypt.compare(password, userDoc.passwordHash);
     if (!passwordMatches) {
       return NextResponse.json(INVALID_CREDENTIALS, { status: 401 });
@@ -49,10 +62,13 @@ export async function POST(req: NextRequest) {
 
     const { passwordHash: _omit, ...profile } = userDoc;
     return NextResponse.json({ profile });
-  } catch (err) {
-    console.error("login error", err);
+  } catch (err: any) {
+    console.error("login error:", err);
     return NextResponse.json(
-      { error: "server-error", message: "Something went wrong. Please try again." },
+      { 
+        error: "server-error", 
+        message: err?.message || "Something went wrong. Please try again." 
+      },
       { status: 500 }
     );
   }
