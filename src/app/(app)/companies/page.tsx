@@ -77,7 +77,7 @@ export default function CompaniesPage() {
           <EmptyState
             icon={<Building2 className="h-10 w-10" />}
             title="No companies yet"
-            description="Create your first company to start tracking its inventory."
+            description="Create your first company to start tracking its inventory — or, if someone else already set one up, ask their admin to add you from Companies → Members."
             action={
               <Button onClick={() => setCreateOpen(true)}>
                 <Plus className="h-4 w-4" /> Create your first company
