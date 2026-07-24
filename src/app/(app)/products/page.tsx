@@ -245,7 +245,7 @@ export default function ProductsPage() {
       <Card>
         {error ? (
           <div className="p-6 text-sm text-danger-500">
-            Couldn't load categories: {error}
+            Couldn&apos;t load categories: {error}
           </div>
         ) : loading ? (
           <div className="p-6 text-sm text-slate-400">Loading…</div>

@@ -17,8 +17,6 @@ import {
 } from "firebase/firestore";
 import { db } from "./firebase";
 
-// For a brand-new document there's nothing to "clear" — an undefined field
-// just shouldn't be written at all, so we drop those keys entirely.
 function stripUndefined<T extends object>(data: T): Partial<T> {
   const clean: Partial<T> = {};
   for (const [key, value] of Object.entries(data)) {

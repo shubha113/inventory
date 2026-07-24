@@ -18,7 +18,7 @@ const INVALID_CREDENTIALS = {
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json().catch(() => null);
-    
+
     if (!body || typeof body.email !== "string" || typeof body.password !== "string") {
       return NextResponse.json(INVALID_CREDENTIALS, { status: 400 });
     }
@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     }
 
     const normalizedEmail = email.trim().toLowerCase();
-    
+
     // Query Firestore
     const snap = await adminDb
       .collection("users")
@@ -43,7 +43,7 @@ export async function POST(req: NextRequest) {
     }
 
     const userDoc = snap.docs[0].data() as UserDoc;
-    
+
     if (!userDoc.passwordHash) {
       return NextResponse.json(INVALID_CREDENTIALS, { status: 401 });
     }
@@ -62,13 +62,10 @@ export async function POST(req: NextRequest) {
 
     const { passwordHash: _omit, ...profile } = userDoc;
     return NextResponse.json({ profile });
-  } catch (err: any) {
-    console.error("login error:", err);
+  } catch (err) {
+    console.error("login error", err);
     return NextResponse.json(
-      { 
-        error: "server-error", 
-        message: err?.message || "Something went wrong. Please try again." 
-      },
+      { message: err instanceof Error ? err.message : "Something went wrong." },
       { status: 500 }
     );
   }

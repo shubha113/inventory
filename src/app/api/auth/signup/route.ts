@@ -43,13 +43,11 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // The very first user in the whole system becomes an admin, so there's
-    // always at least one account that can manage others.
     const countSnap = await usersRef.limit(1).get();
     const role: UserProfile["role"] = countSnap.empty ? "admin" : "staff";
 
     const passwordHash = await bcrypt.hash(password, SALT_ROUNDS);
-    const docRef = usersRef.doc(); // auto-generated id, plays the role Firebase Auth's uid used to play
+    const docRef = usersRef.doc();
 
     const newUser: UserDoc = {
       uid: docRef.id,

@@ -2,11 +2,6 @@ import { doc, runTransaction, collection } from "firebase/firestore";
 import { db } from "./firebase";
 import { Product } from "@/types";
 
-// "Building" a product: look at its Bill of Materials, work out how much of
-// each raw material is needed for the quantity being built, and — if there's
-// enough of everything — deduct all of that raw material stock and add the
-// finished units to the product's stock, in one transaction. If even one
-// raw material is short, nothing is changed (no half-built runs).
 export async function manufactureProduct(params: {
   productId: string;
   quantityToBuild: number;

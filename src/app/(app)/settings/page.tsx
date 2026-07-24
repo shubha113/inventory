@@ -68,7 +68,7 @@ export default function SettingsPage() {
         <div className="border-b border-slate-100 px-5 py-4">
           <h2 className="text-sm font-semibold text-slate-900">Team members</h2>
           <p className="mt-0.5 text-xs text-slate-400">
-            Anyone who signs up joins your workspace. Admins can manage products, orders, and other people's access; staff can use everything except changing roles.
+            Anyone who signs up joins your workspace. Admins can manage products, orders, and other people&apos;s access; staff can use everything except changing roles.
           </p>
         </div>
         {loading ? (
