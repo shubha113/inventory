@@ -148,7 +148,7 @@ export default function CompaniesPage() {
             placeholder="Acme Manufacturing Pvt Ltd"
           />
           <p className="text-xs text-slate-500">
-            You'll be the admin of this company. Its products, stock, suppliers, and orders are completely
+            You&apos;ll be the admin of this company. Its products, stock, suppliers, and orders are completely
             separate from your other companies.
           </p>
           <div className="flex justify-end gap-2 pt-2">
@@ -334,7 +334,7 @@ function MembersModal({
 
         <p className="flex items-center gap-1.5 text-xs text-slate-400">
           <ShieldCheck className="h-3.5 w-3.5" /> A company always needs at least one admin, so the last admin
-          can't demote or remove themselves.
+          can&apos;t demote or remove themselves.
         </p>
       </div>
 
